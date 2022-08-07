@@ -3,6 +3,12 @@
  */
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
+
+/**
+ * modules
+ */
+import { DatabaseModule } from './database/database.module';
 
 /**
  * controllers
@@ -14,12 +20,27 @@ import { AppController } from './app.controller';
  */
 import { AppService } from './app.service';
 
+/**
+ * others
+ */
+import config from '../config';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
+      load: [config],
       isGlobal: true,
+      validationSchema: Joi.object({
+        NODE_ENV: Joi.string().required(),
+        MONGO_CONNECTION: Joi.string().required(),
+        MONGO_USERNAME: Joi.string().required(),
+        MONGO_PASSWORD: Joi.string().required(),
+        MONGO_HOST: Joi.string().required(),
+        MONGO_DB: Joi.string().required(),
+      }),
     }),
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
