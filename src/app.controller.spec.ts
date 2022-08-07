@@ -1,6 +1,22 @@
+/**
+ * built-in and third party dependencies
+ */
 import { Test, TestingModule } from '@nestjs/testing';
+
+/**
+ * controllers
+ */
 import { AppController } from './app.controller';
+
+/**
+ * services
+ */
 import { AppService } from './app.service';
+
+/**
+ * responses
+ */
+const getStatusRespose = { message: 'Welcome to Jelmi!' };
 
 describe('AppController', () => {
   let appController: AppController;
@@ -14,9 +30,9 @@ describe('AppController', () => {
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+  describe('Health Check', () => {
+    it('should return "Welcome to Jelmi!" message', () => {
+      expect(appController.getStatus()).toStrictEqual(getStatusRespose);
     });
   });
 });
