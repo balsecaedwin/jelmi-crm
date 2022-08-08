@@ -1,7 +1,13 @@
 /**
  * built-in and third party dependencies
  */
-import { BadRequestException, Controller, Get, Request } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Post,
+  Request,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 /**
@@ -26,6 +32,35 @@ export class WhatsAppBusinessController {
       return req.query['hub.challenge'];
     } else {
       throw new BadRequestException();
+    }
+  }
+
+  @Post('webhooks')
+  @ApiOperation({ summary: 'Recives messages from users' })
+  async messages(@Request() req: any): Promise<void> {
+    const entry: any[] = req.body.entry;
+
+    if (!entry?.length) {
+      throw new BadRequestException();
+    }
+
+    const changes = entry[0].changes;
+
+    for (const change of changes) {
+      if (change.field === 'messages') {
+        const messages = change.value.messages;
+
+        if (messages?.length) {
+          for (const message of messages) {
+            console.log('New message from webhook:', message);
+
+            await this.whatsAppCloudService.sendBroadcastOffer(
+              message.text.body,
+              +message.from,
+            );
+          }
+        }
+      }
     }
   }
 }

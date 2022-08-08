@@ -43,24 +43,30 @@ export class WhatsAppCloudService {
     this.accessToken = accessToken;
   }
 
-  async sendBroadcastOffer(message: string): Promise<void> {
+  async sendBroadcastOffer(message: string, from: number): Promise<void> {
     const users = await this.usersService.findAll();
 
     for (const user of users) {
-      const parameters: TemplateParameters = {
-        body: [
-          {
-            type: 'text',
-            text: user.firstName,
-          },
-          {
-            type: 'text',
-            text: message,
-          },
-        ],
-      };
+      if (from !== user.phone) {
+        const parameters: TemplateParameters = {
+          body: [
+            {
+              type: 'text',
+              text: user.firstName,
+            },
+            {
+              type: 'text',
+              text: message,
+            },
+          ],
+        };
 
-      await this.sendMessageTemplate(user.phone, 'broadcast_offer', parameters);
+        await this.sendMessageTemplate(
+          user.phone,
+          'broadcast_offer',
+          parameters,
+        );
+      }
     }
   }
 
@@ -90,7 +96,7 @@ export class WhatsAppCloudService {
     };
 
     try {
-      const response = await firstValueFrom(
+      await firstValueFrom(
         this.httpService.post(
           `${this.graphUrl}/${this.apiVersion}/${this.phoneNumberId}/messages`,
           JSON.stringify(payload),
@@ -102,8 +108,6 @@ export class WhatsAppCloudService {
           },
         ),
       );
-
-      console.log(response);
     } catch (error) {
       console.error(error);
     }
