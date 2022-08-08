@@ -10,6 +10,7 @@ import * as Joi from 'joi';
  */
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
+import { WhatsAppModule } from './whatsapp/whatsapp.module';
 
 /**
  * controllers
@@ -43,6 +44,7 @@ import config from '../config';
     }),
     DatabaseModule,
     UsersModule,
+    WhatsAppModule,
   ],
   controllers: [AppController],
   providers: [AppService],
