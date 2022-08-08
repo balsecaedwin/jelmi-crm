@@ -9,6 +9,7 @@ import * as Joi from 'joi';
  * modules
  */
 import { DatabaseModule } from './database/database.module';
+import { UsersModule } from './users/users.module';
 
 /**
  * controllers
@@ -41,6 +42,7 @@ import config from '../config';
       }),
     }),
     DatabaseModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
